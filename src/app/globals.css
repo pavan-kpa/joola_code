@@ -25,3 +25,31 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px #ffcd00, 0 0 10px #ffcd00, 0 0 15px #f9d342;
+  }
+  100% {
+    text-shadow: 0 0 10px #ffcd00, 0 0 20px #ffcd00, 0 0 30px #f9d342;
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+
