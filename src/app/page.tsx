@@ -13,6 +13,7 @@ function Home() {
   const [products, setProducts] = useState({});
   const [showProducts, setShowProducts] = useState(false);
   const [cart, setCart] = useState([]);
+  const [sortOrder, setSortOrder] = useState("lowToHigh");
 
   const fetchProducts = () => {
     fetch("http://localhost:7001/api/products")
@@ -23,7 +24,7 @@ function Home() {
       });
   };
 
-  const addToCart = (product: any) => {
+  const addToCart = (product) => {
     fetch("http://localhost:7001/api/cart", {
       method: "POST",
       headers: {
@@ -36,6 +37,20 @@ function Home() {
         setCart(data.cart);
         alert(data.message);
       });
+  };
+
+  const sortProducts = (category) => {
+    return [...(products[category] || [])].sort((a, b) => {
+      if (sortOrder === "lowToHigh") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    });
+  };
+
+  const handleSortChange = (event) => {
+    setSortOrder(event.target.value);
   };
 
   const styles = {
@@ -51,27 +66,27 @@ function Home() {
       display: 'block',
     },
     content: {
-      marginTop: '120px', // Move content down to ensure it's below the panel
+      marginTop: '120px',
       textAlign: 'center',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
     },
     joolaHeading: {
-      fontSize: '96px', // Increase the font size
+      fontSize: '96px',
       fontWeight: 'bold',
       textAlign: 'center',
-      color: '#fd342', // Give a bright, visually appealing color
+      color: '#fd342',
       margin: '50px 0',
-      textShadow: '3px 3px 5px rgba(0, 0, 0, 0.2)', // Add shadow for emphasis
+      textShadow: '3px 3px 5px rgba(0, 0, 0, 0.2)',
     },
     container: {
       display: 'flex',
       justifyContent: 'space-between',
       padding: '20px',
       width: '100%',
-      maxWidth: '1200px', // Limit the width to ensure layout looks good on wide screens
-      margin: '0 auto', // Center the container on the page
+      maxWidth: '1200px',
+      margin: '0 auto',
     },
     categorySection: {
       flex: '1',
@@ -82,17 +97,16 @@ function Home() {
       fontWeight: 'bold',
       textAlign: 'center',
       marginBottom: '20px',
-      padding: '15px', // Slightly increase padding for a balanced look
-      backgroundColor: '#ffcd00', // Use a bright, appealing color (gold/yellow)
-      color: '#333', // Dark text for contrast
-      borderRadius: '12px', // Soften the corners a bit more
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Add subtle shadow for depth
-      transition: 'transform 0.2s ease', // Smooth transition for hover effects
+      padding: '15px',
+      backgroundColor: '#ffcd00',
+      color: '#333',
+      borderRadius: '12px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      transition: 'transform 0.2s ease',
     },
-    
     productGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)', // 2 products per row
+      gridTemplateColumns: 'repeat(2, 1fr)',
       gap: '20px',
       marginTop: '20px',
     },
@@ -126,6 +140,12 @@ function Home() {
       cursor: 'pointer',
       borderRadius: '5px',
     },
+    sortDropdown: {
+      margin: '10px 0',
+      padding: '10px',
+      borderRadius: '5px',
+      border: '1px solid #ddd',
+    },
   };
 
   return (
@@ -134,51 +154,57 @@ function Home() {
         <ShoppingCartPanel cart={cart} />
         <BulletinPanel />
 
-        {/* Joola Heading at the center */}
         <div style={styles.content}>
           <h1 style={styles.joolaHeading}>JOOLA</h1>
           <button style={styles.button} onClick={fetchProducts}>
             Display Products
           </button>
+
+          {showProducts && (
+            <>
+              <select style={styles.sortDropdown} value={sortOrder} onChange={handleSortChange}>
+                <option value="lowToHigh">Sort Price: Low to High</option>
+                <option value="highToLow">Sort Price: High to Low</option>
+              </select>
+
+              <div style={styles.container}>
+                {/* Pickleball Section */}
+                <div style={styles.categorySection}>
+                  <h2 style={styles.header}>Pickleball</h2>
+                  <div style={styles.productGrid}>
+                    {sortProducts("Pickleball").map((product, idx) => (
+                      <div key={idx} style={styles.productCard}>
+                        <div style={styles.productTitle}>{product.productName}</div>
+                        <div style={styles.productPrice}>${product.price}</div>
+                        <div style={styles.productDescription}>{product.productDescription}</div>
+                        <button style={styles.addButton} onClick={() => addToCart(product)}>
+                          Buy Now
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Table Tennis Section */}
+                <div style={styles.categorySection}>
+                  <h2 style={styles.header}>Table Tennis</h2>
+                  <div style={styles.productGrid}>
+                    {sortProducts("TableTennis").map((product, idx) => (
+                      <div key={idx} style={styles.productCard}>
+                        <div style={styles.productTitle}>{product.productName}</div>
+                        <div style={styles.productPrice}>${product.price}</div>
+                        <div style={styles.productDescription}>{product.productDescription}</div>
+                        <button style={styles.addButton} onClick={() => addToCart(product)}>
+                          Buy Now
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-
-        {showProducts && (
-          <div style={styles.container}>
-            {/* Pickleball Section */}
-            <div style={styles.categorySection}>
-              <h2 style={styles.header}>Pickleball</h2>
-              <div style={styles.productGrid}>
-                {(products as any)["Pickleball"]?.map((product: any, idx: number) => (
-                  <div key={idx} style={styles.productCard}>
-                    <div style={styles.productTitle}>{product.productName}</div>
-                    <div style={styles.productPrice}>${product.price}</div>
-                    <div style={styles.productDescription}>{product.productDescription}</div>
-                    <button style={styles.addButton} onClick={() => addToCart(product)}>
-                      Add to Cart
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Table Tennis Section */}
-            <div style={styles.categorySection}>
-              <h2 style={styles.header}>Table Tennis</h2>
-              <div style={styles.productGrid}>
-                {(products as any)["TableTennis"]?.map((product: any, idx: number) => (
-                  <div key={idx} style={styles.productCard}>
-                    <div style={styles.productTitle}>{product.productName}</div>
-                    <div style={styles.productPrice}>${product.price}</div>
-                    <div style={styles.productDescription}>{product.productDescription}</div>
-                    <button style={styles.addButton} onClick={() => addToCart(product)}>
-                      Add to Cart
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </header>
     </div>
   );
