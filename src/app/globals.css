@@ -27,13 +27,14 @@ body {
 }
 
 @keyframes glow {
-  0% {
+  10% {
     text-shadow: 0 0 5px #ffcd00, 0 0 10px #ffcd00, 0 0 15px #f9d342;
   }
   100% {
     text-shadow: 0 0 10px #ffcd00, 0 0 20px #ffcd00, 0 0 30px #f9d342;
   }
 }
+
 
 @keyframes slide {
   0% {
@@ -69,5 +70,14 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/* @keyframes glow {
+  0% {
+    box-shadow: 0 0 10px rgba(249, 211, 66, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(249, 211, 66, 1);
+  }
+} */
 
 
